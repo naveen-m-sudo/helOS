@@ -5,7 +5,14 @@
 start:
 	call _clear_screen		; clears the screen
 	call print_message		; print text
+	call _print_tag			; prints '>>> ' for getting user input
 	jmp end				; jump to end of the program
+
+;==============================
+; Get and process commands
+;==============================
+
+get_process: 
 
 ;==============================
 ; Print text message
@@ -26,6 +33,18 @@ print_message:
 ;==============================
 ; Utility functions
 ;==============================
+
+_print_tag:
+	mov si, cmd_tag
+	.loop:
+		mov al, [si]
+		cmp al, 0
+		je .end
+		call _print_char
+		inc si
+		jmp .loop
+	.end:
+		ret
 
 _print_char:
 	mov ah, 0x0e
@@ -52,8 +71,10 @@ end:
 ; Messages and buffers
 ;==============================
 
-msg db "helOS!", 0
+cmd_tag db 0xd, 0xa, ">>> ", 0
 
+msg db "helOS!", 0
+clear_cmd db "clear", 0
 command_buffer times 12 db 0
 command_buffer_len db 0
 ;=================================================================
